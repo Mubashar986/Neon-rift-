@@ -1,0 +1,17 @@
+node_modules
+dist
+.git
+.github
+.env
+.env.*
+!.env.example
+test-results
+playwright-report
+loadtest-results
+docs
+e2e
+tests
+scripts
+*.md
+Dockerfile
+docker-compose.yml

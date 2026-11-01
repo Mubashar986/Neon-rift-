@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#03050a" />
+    <meta name="color-scheme" content="dark" />
+    <meta
+      name="description"
+      content="AFTERMATH — a neon-noir tactical extraction prototype inside the Neon Rift universe. Plan an insertion, breach the data vault, and extract."
+    />
+    <title>AFTERMATH // NEON RIFT</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/fonts/fonts.css" />
+    <script type="module" src="/src/aftermath/main.ts"></script>
+  </head>
+  <body class="aw-body">
+    <div id="aw-root">
+      <canvas id="aw-canvas" aria-label="Aftermath 3D tactical view"></canvas>
+      <div class="aw-vignette" aria-hidden="true"></div>
+      <div class="aw-scanlines" aria-hidden="true"></div>
+      <div class="aw-grain" aria-hidden="true"></div>
+      <div id="aw-damage" aria-hidden="true"></div>
+      <div id="aw-fade" aria-hidden="true"></div>
+
+      <div id="aw-hud" class="aw-hud is-hidden">
+        <div class="aw-hud__top">
+          <div class="aw-hud__brand">
+            <span class="aw-hud__brand-mark"></span>
+            <div>
+              <strong>AFTERMATH</strong>
+              <span>DISTRICT 07 // NIGHT CYCLE</span>
+            </div>
+          </div>
+          <div class="aw-hud__compass">
+            <canvas id="aw-compass" width="720" height="56"></canvas>
+            <div id="aw-alert" class="aw-alert"></div>
+          </div>
+          <div class="aw-hud__timer">
+            <span>MISSION TIME</span>
+            <strong id="aw-timer">00:00</strong>
+          </div>
+        </div>
+
+        <div class="aw-hud__left">
+          <div class="aw-minimap">
+            <canvas id="aw-minimap" width="360" height="360"></canvas>
+            <div class="aw-minimap__label">DISTRICT GRID</div>
+          </div>
+          <div class="aw-squad">
+            <div class="aw-panel-title">SQUAD // <span id="aw-squad-count">3</span> ACTIVE</div>
+            <ul id="aw-squad-list" class="aw-squad__list"></ul>
+          </div>
+        </div>
+
+        <div class="aw-hud__center">
+          <div id="aw-waypoint" class="aw-waypoint is-hidden">
+            <span id="aw-waypoint-label">OBJECTIVE</span>
+            <strong id="aw-waypoint-distance">0M</strong>
+          </div>
+          <div id="aw-crosshair" class="aw-crosshair" aria-hidden="true">
+            <span></span><span></span><span></span><span></span>
+            <i id="aw-crosshair-dot"></i>
+          </div>
+          <div id="aw-hitmarker" class="aw-hitmarker" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+          <div id="aw-interaction" class="aw-interaction is-hidden">
+            <div class="aw-interaction__label" id="aw-interaction-label">HOLD E</div>
+            <div class="aw-interaction__bar"><i id="aw-interaction-fill"></i></div>
+          </div>
+          <div id="aw-subtitles" class="aw-subtitles"></div>
+        </div>
+
+        <div class="aw-hud__objective">
+          <div class="aw-panel-title">DIRECTIVE</div>
+          <h2 id="aw-objective-title">BREACH THE DATA VAULT</h2>
+          <p id="aw-objective-detail">Reach the terminal inside the vault and hold E to slice the core.</p>
+          <div id="aw-objective-progress" class="aw-objective-progress is-hidden"><i></i></div>
+        </div>
+
+        <div class="aw-hud__feed">
+          <ul id="aw-killfeed" class="aw-killfeed"></ul>
+        </div>
+
+        <div class="aw-hud__vitals">
+          <div class="aw-meters">
+            <div class="aw-meter aw-meter--health">
+              <span>HEALTH</span><strong id="aw-health-value">100</strong>
+              <div class="aw-meter__bar"><i id="aw-health-fill"></i></div>
+            </div>
+            <div class="aw-meter aw-meter--armor">
+              <span>ARMOR</span><strong id="aw-armor-value">60</strong>
+              <div class="aw-meter__bar"><i id="aw-armor-fill"></i></div>
+            </div>
+            <div class="aw-meter aw-meter--stamina">
+              <span>STAMINA</span>
+              <div class="aw-meter__bar"><i id="aw-stamina-fill"></i></div>
+            </div>
+          </div>
+          <div class="aw-vitals__foot">
+            <span id="aw-role-name">ASSAULT // VK-7</span>
+            <span id="aw-fps">60 FPS</span>
+          </div>
+        </div>
+
+        <div class="aw-hud__weapon">
+          <div class="aw-weapon__name" id="aw-weapon-name">VK-7 RIFLE</div>
+          <div class="aw-weapon__ammo">
+            <strong id="aw-ammo-value">30</strong>
+            <span>/ <em id="aw-reserve-value">150</em></span>
+          </div>
+          <div id="aw-reload-bar" class="aw-reload-bar is-hidden"><i id="aw-reload-fill"></i><span>RELOADING</span></div>
+          <div class="aw-weapon__keys">R RELOAD · RMB AIM · SHIFT SPRINT · C CROUCH</div>
+        </div>
+
+        <div class="aw-hud__record" id="aw-record-indicator"><i></i><span>REC</span></div>
+        <button id="aw-pause" class="aw-icon-button" type="button" aria-label="Pause mission">II</button>
+      </div>
+
+      <div id="aw-stance" class="aw-stance is-hidden">CROUCHED</div>
+
+      <section id="aw-planning" class="aw-screen aw-planning">
+        <header class="aw-topbar">
+          <a class="aw-brand" href="/">
+            <span class="aw-brand__mark"></span>
+            <span class="aw-brand__text">AFTERMATH<em>// NEON RIFT</em></span>
+          </a>
+          <div class="aw-topbar__meta">
+            <div><span>CALLSIGN</span><strong id="aw-callsign">NOVA</strong></div>
+            <div><span>RANK</span><strong id="aw-rank">RECRUIT</strong></div>
+            <div><span>CREDITS</span><strong id="aw-credits">0</strong></div>
+            <a class="aw-link" href="/">← ARENA</a>
+          </div>
+        </header>
+
+        <div class="aw-planning__body">
+          <section class="aw-planning__roles" aria-label="Operator role">
+            <div class="aw-section-head">
+              <span>01</span>
+              <div><h1>CHOOSE YOUR OPERATOR</h1><p>One loadout. One life. Make the plan survive contact.</p></div>
+            </div>
+            <div id="aw-role-list" class="aw-role-list"></div>
+            <div class="aw-career">
+              <div class="aw-career__head">
+                <span>RIFT DIVISION CAREER</span>
+                <strong id="aw-career-rank">RECRUIT</strong>
+              </div>
+              <div class="aw-career__bar"><i id="aw-career-fill" style="width: 0%"></i></div>
+              <div class="aw-career__stats">
+                <div><span>XP</span><strong id="aw-career-xp">0</strong></div>
+                <div><span>MISSIONS</span><strong id="aw-career-missions">0</strong></div>
+                <div><span>EXTRACTS</span><strong id="aw-career-extracts">0</strong></div>
+                <div><span>BEST TIME</span><strong id="aw-career-best">—</strong></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="aw-planning__map" aria-label="Insertion point">
+            <div class="aw-section-head">
+              <span>02</span>
+              <div><h1>SELECT AN INSERTION</h1><p>Where you land decides who hears you first.</p></div>
+            </div>
+            <div class="aw-map" id="aw-map">
+              <div class="aw-map__grid" aria-hidden="true"></div>
+              <div class="aw-map__river" aria-hidden="true"></div>
+              <div class="aw-map__vault" aria-hidden="true"><span>DATA VAULT</span></div>
+              <div class="aw-map__extract" aria-hidden="true"><span>EXFIL</span></div>
+              <div id="aw-insertion-list" class="aw-map__insertions"></div>
+              <div class="aw-map__legend">
+                <span><i class="is-cyan"></i>INSERTION</span>
+                <span><i class="is-amber"></i>VAULT</span>
+                <span><i class="is-green"></i>EXTRACTION</span>
+              </div>
+            </div>
+            <div class="aw-planning__intel">
+              <div>
+                <span class="aw-kicker">SIGNAL INTERCEPT</span>
+                <p id="aw-intel-text">
+                  A Rift Division data core is exposed inside a sealed vault. Hostile patrols own the streets.
+                  Get in, slice the core, and leave before the district locks down.
+                </p>
+              </div>
+              <div class="aw-contract">
+                <span class="aw-kicker">DAILY CONTRACT</span>
+                <strong id="aw-contract-label">First Light</strong>
+                <p id="aw-contract-detail">Complete any contract.</p>
+                <div id="aw-contract-state" class="aw-contract__state">ACTIVE</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="aw-planning__brief" aria-label="Mission briefing">
+            <div class="aw-section-head">
+              <span>03</span>
+              <div><h1>BRIEFING</h1><p>Allies are AI-controlled. Your job is the objective.</p></div>
+            </div>
+            <div class="aw-brief-card">
+              <h2>OP: BLACKOUT CORE</h2>
+              <ul>
+                <li><span>01</span> Breach the vault and reach the terminal.</li>
+                <li><span>02</span> Hold E to slice the data core (6s).</li>
+                <li><span>03</span> Reach the extraction pad and hold E (7s).</li>
+                <li><span>04</span> A downed ally can be revived with E. 30s bleed-out.</li>
+              </ul>
+            </div>
+            <div class="aw-brief-card aw-brief-card--squad">
+              <h2>SQUAD ROSTER</h2>
+              <div id="aw-roster" class="aw-roster"></div>
+            </div>
+            <label class="aw-toggle">
+              <input id="aw-record" type="checkbox" checked />
+              <span class="aw-toggle__box"></span>
+              <span>
+                <strong>RECORD MISSION CLIP</strong>
+                <em>Captures canvas + synthesized audio locally. Nothing is uploaded.</em>
+              </span>
+            </label>
+            <button id="aw-deploy" class="aw-deploy" type="button">
+              <span>DEPLOY TO DISTRICT 07</span>
+              <em>ENTER THE RIFT</em>
+            </button>
+            <p class="aw-planning__foot">
+              Desktop-first prototype · WASD + mouse · headphones recommended · all audio synthesized
+            </p>
+          </section>
+        </div>
+        <div id="aw-desktop-note">AFTERMATH is a desktop-first 3D prototype. A keyboard and mouse are required.</div>
+      </section>
+
+      <section id="aw-pause" class="aw-overlay" hidden>
+        <div class="aw-modal aw-modal--pause">
+          <span class="aw-kicker">MISSION SUSPENDED</span>
+          <h2>PAUSED</h2>
+          <p>The district keeps raining. Take a breath.</p>
+          <div class="aw-settings">
+            <label>
+              <span>MOUSE SENSITIVITY</span>
+              <input id="aw-sensitivity" type="range" min="0.2" max="3" step="0.05" value="1" />
+            </label>
+            <label>
+              <span>MASTER VOLUME</span>
+              <input id="aw-volume" type="range" min="0" max="1" step="0.05" value="0.8" />
+            </label>
+          </div>
+          <div class="aw-modal__actions">
+            <button id="aw-resume" class="aw-btn aw-btn--primary" type="button">RESUME</button>
+            <button id="aw-pause-abort" class="aw-btn" type="button">ABORT TO PLANNING</button>
+          </div>
+          <p class="aw-controls">
+            WASD move · MOUSE look · LMB fire · RMB aim · R reload · SHIFT sprint · C crouch · SPACE jump · E interact · ESC pause
+          </p>
+        </div>
+      </section>
+
+      <section id="aw-results" class="aw-overlay is-hidden" hidden>
+        <div class="aw-modal aw-modal--results">
+          <div class="aw-results__head">
+            <span class="aw-kicker" id="aw-result-kicker">OPERATION COMPLETE</span>
+            <h2 id="aw-result-title">EXTRACTED</h2>
+            <p id="aw-result-sub">The core is secure. The district will remember.</p>
+          </div>
+          <div id="aw-results-stats" class="aw-results__stats"></div>
+          <div class="aw-results__rewards">
+            <div><span>XP GAINED</span><strong id="aw-reward-xp">0</strong></div>
+            <div><span>CREDITS</span><strong id="aw-reward-credits">0</strong></div>
+            <div><span>RANK</span><strong id="aw-reward-rank">RECRUIT</strong></div>
+          </div>
+          <div id="aw-contract-complete" class="aw-contract-complete is-hidden">DAILY CONTRACT COMPLETE</div>
+          <div class="aw-modal__actions aw-modal__actions--wrap">
+            <button id="aw-download-clip" class="aw-btn aw-btn--primary" type="button">DOWNLOAD CLIP</button>
+            <button id="aw-save-frame" class="aw-btn" type="button">SAVE FRAME</button>
+            <button id="aw-share" class="aw-btn" type="button">COPY SHARE TEXT</button>
+            <button id="aw-retry" class="aw-btn" type="button">REDEPLOY SAME PLAN</button>
+            <button id="aw-redeploy" class="aw-btn" type="button">NEW PLAN</button>
+          </div>
+          <p id="aw-clip-status" class="aw-clip-status">Clip capture is processed locally. No network upload.</p>
+        </div>
+      </section>
+
+      <div id="aw-loading" class="aw-loading is-hidden">
+        <div class="aw-loading__ring"></div>
+        <span>SYNCING DISTRICT 07</span>
+      </div>
+
+      <div id="aw-error" class="aw-error is-hidden">
+        <h2>WEBGL REQUIRED</h2>
+        <p id="aw-error-text">AFTERMATH needs WebGL 2. Try a current desktop browser with hardware acceleration enabled.</p>
+        <a class="aw-btn" href="/">RETURN TO ARENA</a>
+      </div>
+    </div>
+  </body>
+</html>

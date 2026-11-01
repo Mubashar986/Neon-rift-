@@ -1,0 +1,66 @@
+{
+  "generatedAt": "2026-10-30T19:54:54.461Z",
+  "environment": {
+    "platform": "win32",
+    "release": "10.0.26300",
+    "cpus": 6,
+    "bun": "1.4.4",
+    "serverMode": "spawned locally by loadtest"
+  },
+  "configuration": {
+    "clients": 32,
+    "rooms": 4,
+    "clientsPerRoom": 8,
+    "durationSec": 10,
+    "warmupSec": 0,
+    "url": "ws://127.0.0.1:3204/ws",
+    "roomCodes": [
+      "RSD4EL",
+      "BS49SD",
+      "KLKJM7",
+      "CC75SA"
+    ]
+  },
+  "client": {
+    "connectMs": {
+      "avg": 18.03,
+      "max": 27.99
+    },
+    "matchStartMs": {
+      "avg": 6.08,
+      "max": 10.43
+    },
+    "inputAckRatio": 0.997,
+    "ackLatencyMs": {
+      "samples": 9330,
+      "p50": 37.43,
+      "p95": 67.73,
+      "p99": 71.33,
+      "max": 75.19
+    },
+    "snapshotsPerSecondPerClient": 15,
+    "bytesInPerSecond": 2385917,
+    "bytesOutPerSecond": 125863,
+    "messagesReceived": 6272,
+    "closedEarly": 0
+  },
+  "server": {
+    "tick": {
+      "avgMs": 3.008,
+      "maxMs": 10.383,
+      "samples": 300,
+      "lastTickAgeMs": 27
+    },
+    "rssMb": 44.3,
+    "heapUsedMb": 2,
+    "totals": {
+      "in": 9430,
+      "out": 6480,
+      "invalid": 0,
+      "rateLimited": 0
+    },
+    "statusBeforeAvailable": true
+  },
+  "measuredForSec": 10,
+  "loadTestElapsedSec": 10.03
+}

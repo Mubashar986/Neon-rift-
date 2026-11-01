@@ -1,0 +1,63 @@
+{
+  "generatedAt": "2026-10-30T19:54:13.856Z",
+  "environment": {
+    "platform": "win32",
+    "release": "10.0.26300",
+    "cpus": 6,
+    "bun": "1.4.4",
+    "serverMode": "spawned locally by loadtest"
+  },
+  "configuration": {
+    "clients": 2,
+    "rooms": 1,
+    "clientsPerRoom": 2,
+    "durationSec": 10,
+    "warmupSec": 0,
+    "url": "ws://127.0.0.1:3201/ws",
+    "roomCodes": [
+      "SDFDCQ"
+    ]
+  },
+  "client": {
+    "connectMs": {
+      "avg": 2.55,
+      "max": 2.96
+    },
+    "matchStartMs": {
+      "avg": 0.91,
+      "max": 0.91
+    },
+    "inputAckRatio": 0.995,
+    "ackLatencyMs": {
+      "samples": 586,
+      "p50": 33.26,
+      "p95": 61.9,
+      "p99": 66.99,
+      "max": 77.91
+    },
+    "snapshotsPerSecondPerClient": 14.9,
+    "bytesInPerSecond": 56753,
+    "bytesOutPerSecond": 7917,
+    "messagesReceived": 390,
+    "closedEarly": 0
+  },
+  "server": {
+    "tick": {
+      "avgMs": 0.654,
+      "maxMs": 3.419,
+      "samples": 300,
+      "lastTickAgeMs": 22
+    },
+    "rssMb": 37.8,
+    "heapUsedMb": 1.5,
+    "totals": {
+      "in": 594,
+      "out": 397,
+      "invalid": 0,
+      "rateLimited": 0
+    },
+    "statusBeforeAvailable": true
+  },
+  "measuredForSec": 10,
+  "loadTestElapsedSec": 10.01
+}

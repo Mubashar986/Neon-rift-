@@ -1,0 +1,37 @@
+{
+  "name": "neon-rift-arena",
+  "version": "1.0.0",
+  "description": "NEON RIFT: ARENA - an authoritative multiplayer browser arena shooter built with Bun, Phaser 3, and TypeScript.",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "bun": ">=1.2.0"
+  },
+  "scripts": {
+    "dev": "bun scripts/dev.ts",
+    "dev:server": "bun --watch src/server/index.ts",
+    "dev:client": "vite",
+    "build": "vite build",
+    "start": "bun src/server/index.ts",
+    "start:e2e": "bun scripts/start-e2e.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test tests",
+    "test:unit": "bun test tests/unit",
+    "test:integration": "bun test tests/integration",
+    "test:e2e": "bun scripts/test-e2e.ts",
+    "test:dom": "bun scripts/check-dom.ts",
+    "loadtest": "bun scripts/loadtest.ts"
+  },
+  "dependencies": {
+    "phaser": "^3.90.0",
+    "three": "^0.187.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "@types/bun": "^1.4.4",
+    "@types/three": "^0.187.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.7"
+  }
+}

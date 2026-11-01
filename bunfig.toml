@@ -1,0 +1,4 @@
+# Keep `bun test` scoped to this project's Bun test suites. The Playwright
+# specs under e2e/ are *.spec.ts too, but they must run through Playwright.
+[test]
+root = "./tests"

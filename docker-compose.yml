@@ -1,0 +1,17 @@
+services:
+  neon-rift:
+    build: .
+    image: neon-rift-arena:local
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: "3000"
+      HOST: "0.0.0.0"
+      NODE_ENV: production
+      # Set this to the exact public origin (scheme + host) in production,
+      # e.g. https://neon-rift.example.com. It is optional when the reverse
+      # proxy preserves the original Host header.
+      PUBLIC_ORIGIN: ${PUBLIC_ORIGIN:-http://localhost:3000}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    restart: unless-stopped
+    init: true
